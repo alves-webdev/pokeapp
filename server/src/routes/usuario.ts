@@ -6,11 +6,17 @@ import { myDataSource } from '../app-data-source';
 export const routerUsuario = Router();
 const usuarioCtrl = new UsuarioConstroller();
 
-routerUsuario.post('/', async (req, res) => {
-    const dados = req.body
-    const usuario = new Treinador(dados.username, dados.team)
-    const usuarioSalvo = await usuarioCtrl.salvar(usuario);
+routerUsuario.post('/register', async (req, res) => {
+    const dados = req.body;
+    const usuario = new Treinador(dados.userName, dados.team, dados.password);
+    const usuarioSalvo = await usuarioCtrl.register(usuario);
     res.json(usuarioSalvo);
+});
+
+routerUsuario.post('/login', async (req, res) => {
+    const { userName, password } = req.body;
+    const usuario = await usuarioCtrl.login(userName, password);
+    res.json(usuario);
 });
 
 routerUsuario.get('/:username', async (req, res) => {

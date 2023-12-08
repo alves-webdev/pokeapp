@@ -9,7 +9,6 @@ export const AppDataSource = new DataSource({
     username: "postgres",
     password: "postgres",
     database: "pokeapp",
-    synchronize: true,
     logging: false,
     entities: [Treinador],
     migrations: [],
