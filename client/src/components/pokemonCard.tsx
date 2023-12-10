@@ -3,7 +3,7 @@ import { PokemonDetails } from "../types/PokemonDetails";
 
 interface PokemonCardProps {
   pokemon: PokemonDetails;
-  showAddButton?: boolean; // Boolean prop to control the visibility of the "Adicionar" button
+  showAddButton?: boolean;
 }
 
 function PokemonCardComponent({

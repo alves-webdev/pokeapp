@@ -1,21 +1,39 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Register() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const backendUrl = "http://localhost:3000";
-
+  const navigate = useNavigate();
   function changeForm(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   }
 
+  function changeConfirmPassword(e: React.ChangeEvent<HTMLInputElement>) {
+    setConfirmPassword(e.target.value);
+  }
+
   async function submitForm(e: FormEvent) {
     e.preventDefault();
-    authRegister(form);
-    setForm({ username: "", password: "" });
+    if (form.password !== confirmPassword) {
+      setError("As senhas não batem!");
+      return;
+    }
+
+    try {
+      await authRegister(form);
+      setForm({ username: "", password: "" });
+      setConfirmPassword("");
+      alert("Usuário cadastrado com sucesso!");
+      navigate("/user");
+    } catch (error) {
+      setError("Error registering. Please try again.");
+    }
   }
 
   async function authRegister(data: typeof form) {
@@ -23,18 +41,27 @@ function Register() {
       const response = await axios.post(`${backendUrl}/usuario/register`, {
         userName: data.username,
         password: data.password,
-        team: []
+        team: [],
       });
 
-      if (response.status !== 200) {
-        console.log("error: " + response);
-      } else if (response.data.error) {
-        console.log(response.data.error);
+      if (response.status === 200) {
+        if (response.data.error) {
+          setError(response.data.error);
+        }
       } else {
-        console.log("Registered successfully");
+        console.log("Unexpected response:", response);
       }
     } catch (error) {
-      console.error("Error registering:", error);
+      if (axios.isAxiosError(error)) {
+        const { response } = error;
+        if (response && response.data && response.data.error) {
+          setError(response.data.error);
+        } else {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -57,12 +84,25 @@ function Register() {
             <label className="block text-gray-700">Senha</label>
             <input
               value={form.password}
+              maxLength={10}
               type="password"
               name="password"
               onChange={changeForm}
               className="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
             />
           </div>
+          <div>
+            <label className="block text-gray-700">Confirmar Senha</label>
+            <input
+              value={confirmPassword}
+              maxLength={10}
+              type="password"
+              name="confirmPassword"
+              onChange={changeConfirmPassword}
+              className="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"

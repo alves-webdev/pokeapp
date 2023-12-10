@@ -1,37 +1,45 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { PokemonDetails } from "../types/PokemonDetails";
 import PokemonCardComponent from "../components/pokemonCard";
 import store from "../redux/store";
 
 function User() {
-  const userName = store.getState().user.user
-  const userPokemonTeamNumbers = store.getState().user.team 
-
+  const { username } = useParams();
+  const userName = store.getState().user.user;
   const [userPokemonTeam, setUserPokemonTeam] = useState<PokemonDetails[]>([]);
 
   useEffect(() => {
     async function fetchUserPokemonTeam() {
-      const teamDetails = await Promise.all(
-        userPokemonTeamNumbers.map(async (pokemonNumber) => {
-          const res = await fetch(
-            `https://pokeapi.co/api/v2/pokemon/${pokemonNumber}`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            return data;
-          }
-          return null;
-        })
-      );
+      try {
+        const response = await fetch(`http://localhost:3000/usuario/${userName}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch user's team");
+        }
 
-      setUserPokemonTeam(teamDetails.filter((pokemon) => pokemon !== null));
+        const data = await response.json();
+
+        // Assuming you have a function to fetch Pokemon details by ID
+        const teamDetailsPromises = data.team.map(async (pokemonId: number) => {
+          const pokemonDetailsResponse = await fetch(` https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+          if (!pokemonDetailsResponse.ok) {
+            throw new Error(`Failed to fetch details for Pokemon ID ${pokemonId}`);
+          }
+
+          return pokemonDetailsResponse.json();
+        });
+
+        const teamDetails = await Promise.all(teamDetailsPromises);
+        setUserPokemonTeam(teamDetails);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
-
-    fetchUserPokemonTeam();
-  }, [userPokemonTeamNumbers]);
-
-  console.log(store.getState().user.team)
+    if (userName) {
+      fetchUserPokemonTeam();
+    }
+  }, [userName]);
 
   return (
     <div className="bg-red-500 min-h-screen p-4 flex flex-col justify-center items-center">

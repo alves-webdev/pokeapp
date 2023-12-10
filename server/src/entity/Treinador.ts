@@ -1,22 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique } from "typeorm";
 import * as bcrypt from 'bcrypt';
 
 @Entity()
+@Unique(["userName"])
 export class Treinador {
 
    constructor(userName: string, team: number[], password: string) {
        this.userName = userName;
        this.team = team;
        this.password = password;
-   }
-
-   @BeforeInsert()
-   async hashPassword() {
-      try {
-          this.password = await bcrypt.hash(this.password, 10);
-      } catch (err) {
-          console.error(err);
-      }
    }
 
    @PrimaryGeneratedColumn()

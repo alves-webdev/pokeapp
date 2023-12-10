@@ -9,7 +9,7 @@ const userSlice = createSlice({
         user: null,
         team: [],
         error: null,
-        isLogged: false,  // New state to track user login status
+        isLogged: false, 
     },
     reducers: {
         setLoading: (state, action) => {

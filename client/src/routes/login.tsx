@@ -23,12 +23,12 @@ function Login() {
     setForm({ username: "", password: "" });
   }
 
-  const dispatch = useDispatch(); // Get the dispatch function
+  const dispatch = useDispatch(); 
 
   async function authLogin(data: typeof form) {
     try {
       const response = await axios.post(`${backendUrl}/usuario/login`, {
-        username: data.username,
+        userName: data.username,
         password: data.password,
       });
 

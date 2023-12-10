@@ -134,7 +134,7 @@ function PokemonDetailsPage() {
                         key={index}
                         className={`w-40 h-48 cursor-pointer p-2 flex flex-col items-center justify-center transition duration-300 transform overflow-hidden rounded-lg bg-yellow-500 ${
                           evoDetail.name === pokemonDetails.name
-                            ? "border-4 border-blue-500" // Add a border for the selected Pokémon
+                            ? "border-4 border-blue-500" 
                             : "border-2 border-red-900"
                         }`}
                       >

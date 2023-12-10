@@ -9,22 +9,29 @@ export class UsuarioConstroller {
 
     async register(usuario: Treinador) {
         console.log('Received registration request:', usuario);
-
-        // Existing code...
-
+    
         try {
-            // Hash the password before saving
+            const existingUser = await userRepository.findOne({ where: { userName: usuario.userName } });
+            if (existingUser) {
+                return { error: 'Usuário já existe' };
+            }
+    
             console.log('Hashing password...');
             usuario.password = await bcrypt.hash(usuario.password, 10);
-
+    
             console.log('Saving user to the database:', usuario);
+    
+            // Log the hashed password after the hashing process
+            console.log('Hashed password:', usuario.password);
+    
             const usuarioSalvo = await userRepository.save(usuario);
             return usuarioSalvo;
         } catch (error) {
             console.error(error);
-            return { error: "Erro ao salvar o usuário" };
+            return { error: 'Erro ao salvar o usuário' };
         }
-    }
+    }    
+
 
 
 
@@ -67,14 +74,23 @@ export class UsuarioConstroller {
         if (!usuario) {
             return { error: 'Usuário não existe' };
         }
-
+    
+        console.log('Provided password:', password);
+        console.log('Stored hashed password:', usuario.password);
+    
         const passwordMatch = await bcrypt.compare(password, usuario.password);
+    
+        console.log('Password match result:', passwordMatch);
+    
         if (!passwordMatch) {
             return { error: 'Senha incorreta' };
         }
-
+    
         return usuario;
     }
+    
+
+
 
     async recuperarTodos() {
         try {
