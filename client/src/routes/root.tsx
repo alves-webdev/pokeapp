@@ -160,15 +160,15 @@ function Root() {
                   className="bg-blue-500 text-white p-2 rounded"
                   onClick={() => handlePagination(prevPage)}
                 >
-                  Previous
+                  Anterior
                 </button>
               )}
-              {nextPage && (
+              {nextPage && pokemons.length != 0 && selectedType === "" && (
                 <button
                   className="bg-blue-500 text-white p-2 rounded"
                   onClick={() => handlePagination(nextPage)}
                 >
-                  Next
+                  Próximo
                 </button>
               )}
             </div>
@@ -184,7 +184,6 @@ function Root() {
               ))}
             </div>
 
-            
           </div>
         )}
       </div>
