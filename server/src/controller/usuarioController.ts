@@ -41,6 +41,10 @@ export class UsuarioConstroller {
             return { error: 'Usuário não encontrado' };
         }
 
+        if (usuario.team.includes(pokemonNumber)) {
+            return { error: 'Este Pokémon já está na sua equipe' };
+        }
+
         if (usuario.team.length >= 6) {
             return { error: 'A equipe já possui o número máximo de Pokémon (6)' };
         }
@@ -55,6 +59,7 @@ export class UsuarioConstroller {
             return { error: 'Erro ao adicionar Pokemon à equipe' };
         }
     }
+
 
 
     async deletePokemonFromTeam(username: string, pokemonNumber: number) {

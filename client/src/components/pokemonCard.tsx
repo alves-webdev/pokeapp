@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { PokemonDetails } from "../types/PokemonDetails";
 import axios from "axios";
 import store from "../redux/store";
+import { toast } from "react-toastify";
 
 interface PokemonCardProps {
   pokemon: PokemonDetails;
@@ -32,15 +33,13 @@ function PokemonCardComponent({
       );
 
       if (response.data.error) {
-        console.log(
-          "Failed to add Pokemon: Maximum number of Pokémon in the team"
-        );
-        console.log(response.data.error);
+        toast.error(response.data.error);
       } else {
-        console.log("Pokemon added successfully!", response.data);
+        toast.success("Pokémon adicionado!");
       }
     } catch (error) {
       console.error("Error adding Pokemon:", error);
+      toast.error("Erro ao adicionar Pokémon à equipe");
     }
   };
 
@@ -54,8 +53,10 @@ function PokemonCardComponent({
         { data: { pokemonNumber } }
       );
       console.log("Pokémon removido", response.data);
+      toast.success("Pokémon removido com sucesso!");
     } catch (error) {
       console.error("Erro: ", error);
+      toast.error("Erro ao remover Pokémon da equipe");
     }
   };
 

@@ -12,7 +12,8 @@ import Register from "./routes/register";
 import NavBar from "./components/navBar";
 import User from "./routes/user";
 import { PersistGate } from "redux-persist/integration/react";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // New functional component to encapsulate routing logic
 export const AppRoutes = () => {
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
@@ -42,8 +43,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <PersistGate persistor={persistor}>
       <React.StrictMode>
         <Router>
+          <ToastContainer />
           <NavBar />
-          <AppRoutes /> {/* Use the new component for routing */}
+          <AppRoutes />
         </Router>
       </React.StrictMode>
     </PersistGate>
