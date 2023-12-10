@@ -9,28 +9,28 @@ export class UsuarioConstroller {
 
     async register(usuario: Treinador) {
         console.log('Received registration request:', usuario);
-    
+
         try {
             const existingUser = await userRepository.findOne({ where: { userName: usuario.userName } });
             if (existingUser) {
                 return { error: 'Usuário já existe' };
             }
-    
+
             console.log('Hashing password...');
             usuario.password = await bcrypt.hash(usuario.password, 10);
-    
+
             console.log('Saving user to the database:', usuario);
-    
+
             // Log the hashed password after the hashing process
             console.log('Hashed password:', usuario.password);
-    
+
             const usuarioSalvo = await userRepository.save(usuario);
             return usuarioSalvo;
         } catch (error) {
             console.error(error);
             return { error: 'Erro ao salvar o usuário' };
         }
-    }    
+    }
 
 
 
@@ -39,6 +39,10 @@ export class UsuarioConstroller {
         const usuario = await userRepository.findOne({ where: { userName: username } });
         if (!usuario) {
             return { error: 'Usuário não encontrado' };
+        }
+
+        if (usuario.team.length >= 6) {
+            return { error: 'A equipe já possui o número máximo de Pokémon (6)' };
         }
 
         usuario.team.push(pokemonNumber);
@@ -51,6 +55,7 @@ export class UsuarioConstroller {
             return { error: 'Erro ao adicionar Pokemon à equipe' };
         }
     }
+
 
     async deletePokemonFromTeam(username: string, pokemonNumber: number) {
         const usuario = await userRepository.findOne({ where: { userName: username } });
@@ -74,21 +79,21 @@ export class UsuarioConstroller {
         if (!usuario) {
             return { error: 'Usuário não existe' };
         }
-    
+
         console.log('Provided password:', password);
         console.log('Stored hashed password:', usuario.password);
-    
+
         const passwordMatch = await bcrypt.compare(password, usuario.password);
-    
+
         console.log('Password match result:', passwordMatch);
-    
+
         if (!passwordMatch) {
             return { error: 'Senha incorreta' };
         }
-    
+
         return usuario;
     }
-    
+
 
 
 
