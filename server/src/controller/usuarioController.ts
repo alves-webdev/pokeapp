@@ -8,7 +8,6 @@ const userRepository = myDataSource.getRepository(Treinador);
 export class UsuarioConstroller {
 
     async register(usuario: Treinador) {
-        console.log('Received registration request:', usuario);
 
         try {
             const existingUser = await userRepository.findOne({ where: { userName: usuario.userName } });
@@ -16,13 +15,7 @@ export class UsuarioConstroller {
                 return { error: 'Usuário já existe' };
             }
 
-            console.log('Hashing password...');
             usuario.password = await bcrypt.hash(usuario.password, 10);
-
-            console.log('Saving user to the database:', usuario);
-
-            // Log the hashed password after the hashing process
-            console.log('Hashed password:', usuario.password);
 
             const usuarioSalvo = await userRepository.save(usuario);
             return usuarioSalvo;
@@ -45,8 +38,8 @@ export class UsuarioConstroller {
             return { error: 'Este Pokémon já está na sua equipe' };
         }
 
-        if (usuario.team.length >= 6) {
-            return { error: 'A equipe já possui o número máximo de Pokémon (6)' };
+        if (usuario.team.length >= 5) {
+            return { error: 'A equipe já possui o número máximo de Pokémon (5)' };
         }
 
         usuario.team.push(pokemonNumber);
@@ -85,12 +78,8 @@ export class UsuarioConstroller {
             return { error: 'Usuário não existe' };
         }
 
-        console.log('Provided password:', password);
-        console.log('Stored hashed password:', usuario.password);
-
         const passwordMatch = await bcrypt.compare(password, usuario.password);
 
-        console.log('Password match result:', passwordMatch);
 
         if (!passwordMatch) {
             return { error: 'Senha incorreta' };

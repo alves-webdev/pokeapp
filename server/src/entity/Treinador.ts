@@ -23,7 +23,6 @@ export class Treinador {
     @Column("int", { array: true })
     team: number[];
     setTeam(team: number[]) {
-        // Ensure the team has a maximum of 6 integers
-        this.team = team.slice(0, 6);
+        this.team = team.slice(0, 5);
     }
 }

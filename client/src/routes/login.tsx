@@ -41,7 +41,6 @@ function Login() {
         dispatch(setUser(response.data.userName))
         dispatch(setTeam(response.data.team))
         navigate("/user");
-        console.log('logado');
       }
     } catch (error) {
       console.error("Error fetching data:", error);

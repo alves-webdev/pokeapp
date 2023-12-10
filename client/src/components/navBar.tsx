@@ -24,7 +24,7 @@ function NavBar() {
           <>
             <div className="mt-4 md:flex-row md:flex space-x-4 text-xl">
               <NavLink to="/" className="text-black">
-                🏠 Home
+                📚 PokéDex
               </NavLink>
               <NavLink to="/user" className="text-black">
                 👤 Usuário

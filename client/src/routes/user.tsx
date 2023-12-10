@@ -43,12 +43,9 @@ function User() {
     if (userName) {
       fetchUserPokemonTeam();
     }
-  }, [userName]); // Fetch only when userName changes
+  }, [userName]); 
 
   useEffect(() => {
-    // Update the state to trigger a re-render
-    // This effect runs when userPokemonTeam changes, but it won't trigger a re-fetch
-    // because it doesn't depend on userName
     setUserPokemonTeam(userPokemonTeam);
   }, [userPokemonTeam]); 
 
@@ -61,9 +58,7 @@ function User() {
         `http://localhost:3000/usuario/${userName}/delete-pokemon`,
         { data: { pokemonNumber } }
       );
-      console.log("Pokemon removed successfully!", response.data);
-
-      // Update the state to trigger a re-render
+      console.log(response.data);
       setUserPokemonTeam((prevTeam) => prevTeam.filter((p) => p.id !== id));
     } catch (error) {
       console.error("Failed to remove Pokemon from the team", error);
