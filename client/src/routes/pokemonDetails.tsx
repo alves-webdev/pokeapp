@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PokemonDetails } from "../types/PokemonDetails";
+import { toast } from "react-toastify";
+import axios from "axios";
+import store from "../redux/store";
 
 interface Evolution {
   species_name: string;
@@ -94,6 +97,27 @@ function PokemonDetailsPage() {
     return <div>Loading...</div>;
   }
 
+  const handleAddPokemon = async () => {
+    const userName = store.getState().user.user;
+    const pokemonNumber = pokemonDetails.id;
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/usuario/${userName}/add-pokemon`,
+        { pokemonNumber }
+      );
+
+      if (response.data.error) {
+        toast.error(response.data.error);
+      } else {
+        toast.success("Pokémon adicionado!");
+      }
+    } catch (error) {
+      console.error("Error adding Pokemon:", error);
+      toast.error("Erro ao adicionar Pokémon à equipe");
+    }
+  };
+
   return (
     <div className="bg-red-500">
       <div className="bg-red-500 min-h-screen min-w-screen p-4 flex flex-col justify-center items-center">
@@ -107,6 +131,7 @@ function PokemonDetailsPage() {
             <h1 className="font-bold text-4xl">{pokemonDetails.name}</h1>
             <p>#{pokemonDetails.id}</p>
           </div>
+          <div>
           <div className="text-center">
             <p>✨Stats:</p>
             <ul>
@@ -117,6 +142,13 @@ function PokemonDetailsPage() {
                 </li>
               ))}
             </ul>
+          </div>
+          <button
+            onClick={handleAddPokemon}
+            className="shadow-lg bg-yellow-500 mt-4 ml-4 rounded-md p-1 hover:bg-red-300"
+          >
+            Adicionar ao time
+          </button>
           </div>
         </div>
         {evoChain.length > 0 && (

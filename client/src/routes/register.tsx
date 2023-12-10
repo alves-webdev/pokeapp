@@ -1,38 +1,26 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Register() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
 
   const backendUrl = "http://localhost:3000";
   const navigate = useNavigate();
-  function changeForm(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  }
-
-  function changeConfirmPassword(e: React.ChangeEvent<HTMLInputElement>) {
-    setConfirmPassword(e.target.value);
-  }
 
   async function submitForm(e: FormEvent) {
     e.preventDefault();
     if (form.password !== confirmPassword) {
-      setError("As senhas não batem!");
+      toast.error("As senhas não batem!");
       return;
     }
 
     try {
       await authRegister(form);
-      setForm({ username: "", password: "" });
-      setConfirmPassword("");
-      alert("Usuário cadastrado com sucesso!");
-      navigate("/user");
     } catch (error) {
-      setError("Error registering. Please try again.");
+      toast.error("Erro ao cadastrar. Tente novamente.");
     }
   }
 
@@ -43,10 +31,13 @@ function Register() {
         password: data.password,
         team: [],
       });
-
-      if (response.status === 200) {
+  
+      if (response.status == 200) {
         if (response.data.error) {
-          setError(response.data.error);
+          toast.error(response.data.error);
+        } else {
+          toast.success("Usuário cadastrado com sucesso!");
+          navigate("/login")
         }
       } else {
         console.log("Unexpected response:", response);
@@ -55,7 +46,7 @@ function Register() {
       if (axios.isAxiosError(error)) {
         const { response } = error;
         if (response && response.data && response.data.error) {
-          setError(response.data.error);
+          toast.error(response.data.error);
         } else {
           throw error;
         }
@@ -64,6 +55,7 @@ function Register() {
       }
     }
   }
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-red-500">
@@ -76,7 +68,7 @@ function Register() {
               type="text"
               name="username"
               value={form.username}
-              onChange={changeForm}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
               className="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -87,7 +79,7 @@ function Register() {
               maxLength={10}
               type="password"
               name="password"
-              onChange={changeForm}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               className="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -98,11 +90,10 @@ function Register() {
               maxLength={10}
               type="password"
               name="confirmPassword"
-              onChange={changeConfirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
             />
           </div>
-          {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
