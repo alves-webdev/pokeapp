@@ -25,6 +25,22 @@ routerUsuario.get('/:username', async (req, res) => {
     return res.json(treinador);
 });
 
+routerUsuario.post('/:username/add-pokemon', async (req, res) => {
+    const { username } = req.params;
+    const { pokemonNumber } = req.body;
+    const result = await usuarioCtrl.addPokemonToTeam(username, pokemonNumber);
+
+    res.json(result);
+});
+
+routerUsuario.delete('/:username/delete-pokemon', async (req, res) => {
+    const { username } = req.params;
+    const { pokemonNumber } = req.body;
+
+    const result = await usuarioCtrl.deletePokemonFromTeam(username, pokemonNumber);
+
+    res.json(result);
+});
 
 routerUsuario.get('/', async (req, res) => {
     const usuarios = await usuarioCtrl.recuperarTodos();

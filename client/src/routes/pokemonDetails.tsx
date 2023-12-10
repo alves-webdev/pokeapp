@@ -95,11 +95,8 @@ function PokemonDetailsPage() {
   }
 
   return (
-    <div className="bg-red-600">
-      <Link to="/">
-        <button className="text-xl">🏠 Home</button>
-      </Link>
-      <div className="bg-red-600 min-h-screen min-w-screen p-4 flex flex-col justify-center items-center">
+    <div className="bg-red-500">
+      <div className="bg-red-500 min-h-screen min-w-screen p-4 flex flex-col justify-center items-center">
         <div className="flex flex-row gap-12">
           <div className="text-center">
             <img

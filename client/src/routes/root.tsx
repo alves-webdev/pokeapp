@@ -180,7 +180,7 @@ function Root() {
           <div>
             <div className="bg-red-500 min-h-screen min-w-screen p-4 flex flex-wrap justify-center gap-2">
               {pokemons.map((pokemon) => (
-                <PokemonCardComponent key={pokemon.name} pokemon={pokemon} />
+                <PokemonCardComponent key={pokemon.name} pokemon={pokemon} showAddButton={true}/>
               ))}
             </div>
 
