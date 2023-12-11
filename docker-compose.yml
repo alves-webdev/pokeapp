@@ -9,24 +9,26 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     volumes:
-     - ./server/pgdata:/var/lib/postgresql/data
+      - ./server/pgdata:/var/lib/postgresql/data
     ports:
-    - "5432:5432"
+      - "5432:5432"
+    command: ["docker-entrypoint.sh", "postgres", "-c", "log_statement=all"]
 
   app:
     container_name: pokeapp-api
     restart: always
     build: ./server
-    ports: 
+    ports:
       - "3000:3000"
     depends_on:
       - db
+    command: ["./wait-for-it.sh", "db:5432", "--", "npm", "start"]
 
   client:
     container_name: pokeapp-client
     restart: always
     build: ./client
     ports:
-      - "8080:8080" 
+      - "8080:8080"
     depends_on:
       - app
