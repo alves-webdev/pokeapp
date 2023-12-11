@@ -1,8 +1,8 @@
 version: '3'
 services:
   db:
-    restart: always
     image: 'postgres:latest'
+    restart: always
     environment:
       PSQL_HOST: db
       POSTGRES_PASSWORD: postgres
